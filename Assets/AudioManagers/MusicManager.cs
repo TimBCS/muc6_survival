@@ -1,48 +1,54 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
+using System.Collections.Generic; // Allows the use of lists.
 
 [RequireComponent (typeof (AudioSource))]
 
 public class MusicManager : MonoBehaviour 
 {
 
-	public List <AudioClip> musicPlaylist;
-	public static MusicManager Instance;
-	public bool random;
-	private AudioSource src;
-	private int repeatCheck = -1;
+	public List <AudioClip> musicPlaylist;					// The list of songs that will be randomly chosen to play upon level load
+	public static MusicManager instance = null;					// For the singleton pattern
 
+	private AudioSource song;								// The chosen song from the list will be put in here
+	private int repeatCheck = -1;							// Will check to make sure that a song on the list isn't chosen twice in a row
+	private int randomSong;									// DO NOT INITIALIZE
+	
 
-	// Use this for initialization
+	// Singleton Pattern
 	void Awake ()
 	{
-		if (Instance != null && Instance != this)
+		if (instance == null)
+			instance = this;
+		else if (instance != this)
 			Destroy (gameObject);
 
-		Instance = this;
-
 		DontDestroyOnLoad (gameObject);
-		src = this.GetComponent<AudioSource> ();
 	}
 	
-	// Update is called once per frame
-	void Update () 
+	// Function used to play the music
+	public void Start () 
 	{
-		int randomSong;
+		randomSong = Random.Range(0,4);						// Choose a random song from the list
 
-		if (Input.GetKeyDown ("space")) 
+		song = gameObject.GetComponent<AudioSource>();
+		song.clip = musicPlaylist [randomSong];
+		song.Play ();
+		
+	    repeatCheck = randomSong;
+	}
+
+	public void MusicChange ()
+	{
+		while (randomSong == repeatCheck)					// If chosen song is already playing...
 		{
-			randomSong = Random.Range(0,4);
-			while (randomSong == repeatCheck)
-			{
-				randomSong = Random.Range (0,4);
-			}
-
-			src.clip = musicPlaylist [randomSong];
-			src.Play ();
-			
-		    repeatCheck = randomSong;
+			randomSong = Random.Range (0,4);				// ...then choose again until the song is different. 
 		}
+
+		song = gameObject.GetComponent<AudioSource>();
+		song.clip = musicPlaylist [randomSong];
+		song.Play ();
+		
+		repeatCheck = randomSong;
 	}
 }

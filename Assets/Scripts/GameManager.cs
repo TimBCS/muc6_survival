@@ -18,7 +18,9 @@ namespace Completed
 		private Text levelText;									//Text to display current level number.
 		private GameObject levelImage;							//Image to block out level as levels are being set up, background for levelText.
 		private BoardManager boardScript;						//Store a reference to our BoardManager which will set up the level.
+		private MusicManager musicScript;						//Store a reference to the MusicManager script, for the purpose of changing the song.
 		private int level = 1;									//Current level number, expressed in game as "Day 1".
+		private int musicTime = 1;								//Amount of levels a single song has been playing.
 		private List<Enemy> enemies;							//List of all Enemy units, used to issue them move commands.
 		private bool enemiesMoving;								//Boolean to check if enemies are moving.
 		private bool doingSetup = true;							//Boolean to check if we're setting up board, prevent Player from moving during setup.
@@ -48,6 +50,9 @@ namespace Completed
 			
 			//Get a component reference to the attached BoardManager script
 			boardScript = GetComponent<BoardManager>();
+
+			//Get a component reference to the attached MusicManager script
+			musicScript = GetComponent<MusicManager>();
 			
 			//Call the InitGame function to initialize the first level 
 			InitGame();
@@ -58,6 +63,15 @@ namespace Completed
 		{
 			//Add one to our level number.
 			level++;
+			//Add one to the music change counter.
+			musicTime++;
+			//If musicTime is greater than or equal to 6, select a different song.
+			if (musicTime >= 6)
+			{
+				musicScript.MusicChange();
+				//Set musicTime
+				musicTime = 1;
+			}
 			//Call InitGame to initialize our level.
 			InitGame();
 		}
@@ -88,7 +102,6 @@ namespace Completed
 			
 			//Call the SetupScene function of the BoardManager script, pass it current level number.
 			boardScript.SetupScene(level);
-			
 		}
 		
 		
