@@ -24,7 +24,7 @@ namespace Completed
 		//DamageWall is called when the player attacks a wall.
 		public void DamageWall (int loss)
 		{
-
+			SoundManager.instance.PlayBushSound();
 			
 			//Set spriteRenderer to the damaged wall sprite.
 			spriteRenderer.sprite = dmgSprite;

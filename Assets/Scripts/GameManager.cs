@@ -18,7 +18,6 @@ namespace Completed
 		private Text levelText;									//Text to display current level number.
 		private GameObject levelImage;							//Image to block out level as levels are being set up, background for levelText.
 		private BoardManager boardScript;						//Store a reference to our BoardManager which will set up the level.
-		private MusicManager musicScript;						//Store a reference to the MusicManager script, for the purpose of changing the song.
 		private int level = 1;									//Current level number, expressed in game as "Day 1".
 		private int musicTime = 1;								//Amount of levels a single song has been playing.
 		private List<Enemy> enemies;							//List of all Enemy units, used to issue them move commands.
@@ -50,9 +49,6 @@ namespace Completed
 			
 			//Get a component reference to the attached BoardManager script
 			boardScript = GetComponent<BoardManager>();
-
-			//Get a component reference to the attached MusicManager script
-			musicScript = GetComponent<MusicManager>();
 			
 			//Call the InitGame function to initialize the first level 
 			InitGame();
@@ -68,7 +64,8 @@ namespace Completed
 			//If musicTime is greater than or equal to 6, select a different song.
 			if (musicTime >= 6)
 			{
-				musicScript.MusicChange();
+				//Changes the currently playing song
+				MusicManager.instance.MusicChange();
 				//Set musicTime
 				musicTime = 1;
 			}
@@ -139,12 +136,17 @@ namespace Completed
 		//GameOver is called when the player reaches 0 food points
 		public void GameOver()
 		{
+			SoundManager.instance.PlayDeathSound();
+
 			//Set levelText to display number of levels passed and game over message
 			levelText.text = "After " + level + " days, you starved.";
 			
 			//Enable black background image gameObject.
 			levelImage.SetActive(true);
-			
+
+			//Plays the song for getting a Game Over
+			MusicManager.instance.GameOverSong();
+
 			//Disable this GameManager.
 			enabled = false;
 		}

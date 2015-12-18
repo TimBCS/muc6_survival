@@ -135,6 +135,7 @@ namespace Completed
 			//If Move returns true, meaning Player was able to move into an empty space.
 			if (Move (xDir, yDir, out hit)) 
 			{
+				SoundManager.instance.PlayMoveSound();
 			}
 			
 			//Since the player has moved and lost food points, check if the game has ended.
@@ -181,6 +182,8 @@ namespace Completed
 				
 				//Update foodText to represent current total and notify player that they gained points
 				foodText.text = "+" + pointsPerFood + " Food: " + food;
+
+				SoundManager.instance.PlayFoodSound();
 				
 				//Disable the food object the player collided with.
 				other.gameObject.SetActive (false);
@@ -195,7 +198,8 @@ namespace Completed
 				//Update foodText to represent current total and notify player that they gained points
 				foodText.text = "+" + pointsPerSoda + " Food: " + food;
 				
-				
+				SoundManager.instance.PlayDrinkSound();
+
 				//Disable the soda object the player collided with.
 				other.gameObject.SetActive (false);
 			}
@@ -216,6 +220,8 @@ namespace Completed
 		{
 			//Set the trigger for the player animator to transition to the playerHit animation.
 			animator.SetTrigger ("playerHit");
+
+			SoundManager.instance.PlayHurtSound();
 			
 			//Subtract lost food points from the players total.
 			food -= loss;
